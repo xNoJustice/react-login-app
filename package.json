@@ -24,8 +24,11 @@
     "prettify": "yarn prettier \"**/*.*(js|jsx)\" --ignore-path=.prettierignore --write"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^0.0.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

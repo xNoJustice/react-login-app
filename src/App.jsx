@@ -1,44 +1,165 @@
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const schema = yup.object().shape({
+    firstName: yup.string().required('First Name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    email: yup.string().email().required('Email is required'),
+    password: yup.string().min(4).max(20).required('Password is required'),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'Passwords must match'),
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  })
+
+  const onSubmit = (data) => {
+    console.log(data)
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen p-6 mx-auto text-2xl font-bold dark:text-white">
-      <h1 className="text-3xl font-bold underline">
-        <span className="relative inline-block before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-pink-500">
-          <span className="relative text-white">Vite</span>
-        </span>
-        <span className="relative inline-block ml-5 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-red-500">
-          <span className="relative text-white">+</span>
-        </span>
-        <span className="relative inline-block ml-5 before:block before:absolute before:-inset-1 before:-skew-y-3 before:bg-purple-500">
-          <span className="relative text-white">React</span>
-        </span>
-      </h1>
-      <button
-        className="p-2 mt-5 bg-blue-500 border-blue-500 rounded-md"
-        onClick={() => setCount((count) => count + 1)}
-      >
-        count is {count}
-      </button>
-      <div className="max-w-lg p-8 mx-auto">
-        <details
-          className="p-6 rounded-lg open:bg-white dark:open:bg-slate-900 open:ring-1 open:ring-black/5 dark:open:ring-white/10 open:shadow-lg"
-          open
+    <div className="flex w-full h-2/3 xl:w-3/4 lg:w-11/12">
+      <div className="hidden bg-[url('https://source.unsplash.com/Mv9hjnEUHR4/600x800')] w-full bg-cover rounded-l-lg lg:block lg:w-5/12"></div>
+      <div className="w-full p-5 bg-white lg:w-5/12 dark:bg-gray-700 lg:rounded-l-none">
+        <h3 className="py-4 text-2xl text-center text-gray-800 dark:text-white">
+          Create an Account!
+        </h3>
+        <form
+          className="px-8 pt-6 pb-8 mb-4 bg-white rounded dark:bg-gray-800"
+          onSubmit={handleSubmit(onSubmit)}
         >
-          <summary className="text-sm font-semibold leading-6 select-none text-slate-900 dark:text-white">
-            React + Vite?
-          </summary>
-          <div className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-400">
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-              Molestias iste facilis minus laboriosam accusamus adipisci quaerat
-              delectus eum quos modi, neque, qui veniam. Nostrum a voluptatibus,
-              exercitationem magni excepturi explicabo?
-            </p>
+          <div className="mb-4 md:flex md:justify-between">
+            <div className="mb-4 md:mr-2 md:mb-0">
+              <label
+                className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
+                htmlFor="firstName"
+              >
+                First Name
+              </label>
+              <input
+                className={`${errors.fullName ? 'border-red-500' : ''} w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none dark:text-black focus:outline-none focus:shadow-outline`}
+                type="text"
+                placeholder="First Name"
+                {...register('firstName')}
+              />
+              {errors.firstName && (
+                <p className="text-xs italic text-red-500">
+                  {errors.firstName.message}
+                </p>
+              )}
+            </div>
+            <div className="md:ml-2">
+              <label
+                className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
+                htmlFor="lastName"
+              >
+                Last Name
+              </label>
+              <input
+                className={`${errors.lastName ? 'border-red-500' : ''} w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none dark:text-black focus:outline-none focus:shadow-outline`}
+                type="text"
+                placeholder="Last Name"
+                {...register('lastName')}
+              />
+              {errors.lastName && (
+                <p className="text-xs italic text-red-500">
+                  {errors.lastName.message}
+                </p>
+              )}
+            </div>
           </div>
-        </details>
+          <div className="mb-4">
+            <label
+              className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
+              htmlFor="email"
+            >
+              Email
+            </label>
+            <input
+              className={`${errors.email ? 'border-red-500' : ''} w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none dark:text-black focus:outline-none focus:shadow-outline`}
+              type="email"
+              placeholder="Email"
+              {...register('email')}
+            />
+            {errors.email && (
+              <p className="text-xs italic text-red-500">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+          <div className="mb-4 md:flex md:justify-between">
+            <div className="mb-4 md:mr-2 md:mb-0">
+              <label
+                className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <input
+                className={`${errors.password ? 'border-red-500' : ''} w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none dark:text-black focus:outline-none focus:shadow-outline`}
+                type="password"
+                placeholder="******************"
+                {...register('password')}
+              />
+              {errors.password && (
+                <p className="text-xs italic text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <div className="md:ml-2">
+              <label
+                className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
+                htmlFor="c_password"
+              >
+                Confirm Password
+              </label>
+              <input
+                className={`${errors.confirmPassword ? 'border-red-500' : ''} w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none dark:text-black focus:outline-none focus:shadow-outline`}
+                type="password"
+                placeholder="******************"
+                {...register('confirmPassword')}
+              />
+              {errors.confirmPassword && (
+                <p className="text-xs italic text-red-500">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="mb-6 text-center">
+            <input
+              className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-900 focus:outline-none focus:shadow-outline"
+              type="submit"
+              value="Register Account"
+            />
+          </div>
+          <hr className="mb-6 border-t" />
+          <div className="text-center">
+            <a
+              className="inline-block text-sm text-blue-300 align-baseline dark:text-blue-300 hover:text-blue-500"
+              href="#"
+            >
+              Forgot Password?
+            </a>
+          </div>
+          <div className="text-center">
+            <a
+              className="inline-block text-sm text-blue-300 align-baseline dark:text-blue-300 hover:text-blue-500"
+              href="#"
+            >
+              Already have an account? Login!
+            </a>
+          </div>
+        </form>
       </div>
     </div>
   )
